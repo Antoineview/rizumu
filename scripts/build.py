@@ -3,7 +3,7 @@ from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
 root = Path(__file__).resolve().parent.parent
-output = root / "dist" / "rhythm-website.zip"
+output = root / "dist" / "rizumu.zip"
 output.parent.mkdir(exist_ok=True)
 with ZipFile(output, "w", compression=ZIP_DEFLATED) as archive:
     for name in ("index.html", "style.css", "script.js"):

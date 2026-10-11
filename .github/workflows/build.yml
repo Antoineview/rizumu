@@ -21,7 +21,7 @@ jobs:
       - name: Upload downloadable ZIP
         uses: actions/upload-artifact@v7
         with:
-          name: rhythm-website
-          path: dist/rhythm-website.zip
+          name: rizumu
+          path: dist/rizumu.zip
           archive: false
           if-no-files-found: error
