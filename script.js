@@ -79,21 +79,32 @@ function start() {
 
   function render() {
     const width = scene.clientWidth, height = scene.clientHeight;
+    const renderWidth = canvas.clientWidth, renderHeight = canvas.clientHeight;
     const ratio = Math.min(window.devicePixelRatio || 1, 2);
-    const pixelWidth = Math.round(width * ratio), pixelHeight = Math.round(height * ratio);
+    const pixelWidth = Math.round(renderWidth * ratio), pixelHeight = Math.round(renderHeight * ratio);
     if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
       canvas.width = pixelWidth;
       canvas.height = pixelHeight;
     }
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.uniform2f(uniforms.viewport, width, height);
-    gl.uniform1f(uniforms.size, Math.max(150, Math.min(window.innerWidth * .23, 300)));
+    gl.uniform2f(uniforms.viewport, renderWidth, renderHeight);
+    const size = Math.min(Math.max(150, Math.min(window.innerWidth * .23, 300)), renderHeight * .7, renderWidth * .55);
+    gl.uniform1f(uniforms.size, size);
     const tilt = -12 * Math.PI / 180;
+    // Reserve space for the whole rotating glyph and its perspective enlargement.
+    const margin = size * .55 + 12;
+    const safeX = Math.max(0, (renderWidth / 2 - 12) * .85 - margin);
+    const safeY = Math.max(0, (renderHeight / 2 - 12) * .85 - margin);
+    const radiusX = width * .32, radiusY = height * .19;
+    const extentX = Math.hypot(radiusX * Math.cos(tilt), radiusY * Math.sin(tilt));
+    const extentY = Math.hypot(radiusX * Math.sin(tilt), radiusY * Math.cos(tilt));
+    const fit = Math.min(1, safeX / extentX, safeY / extentY);
+    scene.querySelector('.orbit').style.transform = `rotate(-12deg) scale(${fit})`;
     meshes.forEach((mesh, index) => {
       const angle = elapsed / 9000 + index * Math.PI * 2 / 3;
-      const x = Math.cos(angle) * width * .32;
-      const y = Math.sin(angle) * height * .19;
+      const x = Math.cos(angle) * radiusX * fit;
+      const y = Math.sin(angle) * radiusY * fit;
       gl.uniform3f(uniforms.translation, x * Math.cos(tilt) - y * Math.sin(tilt), -(x * Math.sin(tilt) + y * Math.cos(tilt)), Math.sin(angle) * 120);
       gl.uniform3f(uniforms.rotation, -10 * Math.PI / 180, (elapsed / 85 + index * 30 - 20) * Math.PI / 180, 8 * Math.PI / 180);
       gl.bindTexture(gl.TEXTURE_2D, mesh.texture);
