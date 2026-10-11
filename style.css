@@ -1,0 +1,24 @@
+:root { color-scheme: light; --paper: #f4f1e9; --ink: #24241f; --red: #e7442e; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: Arial, Helvetica, sans-serif; min-height: 100svh; display: flex; flex-direction: column; }
+header, footer { display: flex; justify-content: space-between; align-items: center; margin: 0 4vw; }
+header { height: 100px; border-bottom: 1px solid #24241f26; }
+.wordmark { font-size: 20px; font-weight: 800; letter-spacing: -.8px; color: inherit; text-decoration: none; }
+.wordmark span { font-size: 10px; vertical-align: top; margin-left: 4px; }
+.edition, footer, .caption { font-size: 10px; letter-spacing: 1.8px; }
+main { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
+.scene { width: min(1100px, 100vw); height: clamp(340px, 58vh, 680px); position: relative; perspective: 1000px; perspective-origin: 50% 45%; }
+.orbit { position: absolute; width: 71%; height: 47%; left: 14.5%; top: 26.5%; border: 1px solid #24241f30; border-radius: 50%; transform: rotate(-12deg); }
+.center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 16px; font-size: 11px; letter-spacing: 5px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
+.character { position: absolute; left: 50%; top: 50%; width: 1em; height: 1em; font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans CJK JP", sans-serif; font-weight: 900; font-size: clamp(86px, 13vw, 168px); line-height: 1; transform-style: preserve-3d; will-change: transform; }
+.layer { position: absolute; inset: 0; display: grid; place-items: center; color: #962518; backface-visibility: visible; transform: translateZ(var(--depth)); }
+.layer.front { color: var(--red); text-shadow: 0 1px 0 #ff8a62; }
+.caption { display: flex; flex-direction: column; align-items: center; gap: 12px; margin: 20px 0 50px; color: #65655e; }
+.caption [lang] { color: var(--ink); font-size: 15px; letter-spacing: 7px; margin-left: 7px; }
+footer { min-height: 84px; border-top: 1px solid #24241f26; gap: 16px; color: #65655e; }
+button { appearance: none; border: 1px solid #24241f40; border-radius: 100px; background: transparent; color: var(--ink); padding: 12px 18px; font: inherit; letter-spacing: inherit; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+button:hover { background: #24241f08; border-color: var(--ink); }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--red); outline-offset: 5px; }
+.button-icon { font-size: 12px; letter-spacing: 0; width: 10px; }
+@media (max-width: 600px) { header { height: 76px; } .edition { font-size: 8px; letter-spacing: 1px; } footer { font-size: 8px; letter-spacing: 1px; } .footer-right { display: none; } .caption { font-size: 8px; } button { padding: 11px 13px; } }
