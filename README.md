@@ -1,6 +1,6 @@
 # リズム / Rizumu
 
-A minimal HTML, CSS, and JavaScript page. Three extruded Japanese characters spin around an elliptical orbit. No dependencies, installation, or external assets.
+A minimal HTML, CSS, and JavaScript page. Three Japanese characters with solid 3D sides and light faces spin around an elliptical orbit. The renderer uses WebGL without libraries, installation, or external assets.
 
 Open `index.html` directly, or preview with `python3 -m http.server 8000` and visit http://localhost:8000. The page respects reduced-motion preferences.
 

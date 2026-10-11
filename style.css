@@ -2,10 +2,10 @@
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--paper); color: var(--ink); font-family: Arial, Helvetica, sans-serif; min-height: 100svh; display: flex; flex-direction: column; }
 main { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
-.scene { width: min(1100px, 100vw); height: clamp(340px, 58vh, 680px); position: relative; perspective: 1000px; perspective-origin: 50% 45%; }
+.scene { width: min(1100px, 100vw); height: clamp(340px, 58vh, 680px); position: relative; }
 .orbit { position: absolute; width: 71%; height: 47%; left: 14.5%; top: 26.5%; border: 1px solid #24241f30; border-radius: 50%; transform: rotate(-12deg); }
 .center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 16px; font-size: 11px; letter-spacing: 5px; }
 .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
-.character { position: absolute; left: 50%; top: 50%; width: 1em; height: 1em; font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans CJK JP", sans-serif; font-weight: 900; font-size: clamp(86px, 13vw, 168px); line-height: 1; transform-style: preserve-3d; will-change: transform; user-select: none; }
-.layer { position: absolute; inset: 0; display: grid; place-items: center; color: #a93222; -webkit-text-stroke: .4px currentColor; backface-visibility: visible; transform: translateZ(var(--depth)); }
-.layer.front, .layer.back { color: #ff795c; -webkit-text-stroke: 0; }
+.characters { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.fallback { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; color: #ff795c; font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans CJK JP", sans-serif; font-size: clamp(86px, 13vw, 168px); font-weight: 900; }
+.scene.ready .fallback { display: none; }
