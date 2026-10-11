@@ -41,16 +41,18 @@ function start() {
     [gl.FRAGMENT_SHADER, `
       precision mediump float;
       uniform sampler2D glyph;
+      uniform vec3 sideColor;
       varying vec2 vUv;
       varying vec3 vNormal;
       varying float vFace;
       void main() {
         if (vFace > 0.5) {
-          if (texture2D(glyph, vUv).a < 0.5) discard;
-          gl_FragColor = vec4(1.0, 0.475, 0.36, 1.0);
+          vec4 texel = texture2D(glyph, vUv);
+          if (texel.a < 0.5) discard;
+          gl_FragColor = vec4(texel.rgb, 1.0);
         } else {
           float light = 0.78 + 0.22 * abs(dot(normalize(vNormal), normalize(vec3(-0.4, 0.7, 0.6))));
-          gl_FragColor = vec4(vec3(0.66, 0.196, 0.133) * light, 1.0);
+          gl_FragColor = vec4(sideColor * light * 0.65, 1.0);
         }
       }
     `]
@@ -68,8 +70,8 @@ function start() {
   gl.enable(gl.DEPTH_TEST);
   gl.clearColor(0, 0, 0, 0);
   const attributes = ['position', 'normal', 'uv', 'face'].map(name => gl.getAttribLocation(program, name));
-  const uniforms = Object.fromEntries(['viewport', 'size', 'translation', 'rotation'].map(name => [name, gl.getUniformLocation(program, name)]));
-  const meshes = [...'リズム'].map(createGlyph);
+  const uniforms = Object.fromEntries(['viewport', 'size', 'translation', 'rotation', 'sideColor'].map(name => [name, gl.getUniformLocation(program, name)]));
+  const meshes = [...document.querySelectorAll('[data-glyph]')].map(createGlyph);
   scene.classList.add('ready');
   let elapsed = 0;
   let previousTime = null;
@@ -95,6 +97,7 @@ function start() {
       gl.uniform3f(uniforms.translation, x * Math.cos(tilt) - y * Math.sin(tilt), -(x * Math.sin(tilt) + y * Math.cos(tilt)), Math.sin(angle) * 120);
       gl.uniform3f(uniforms.rotation, -10 * Math.PI / 180, (elapsed / 85 + index * 30 - 20) * Math.PI / 180, 8 * Math.PI / 180);
       gl.bindTexture(gl.TEXTURE_2D, mesh.texture);
+      gl.uniform3fv(uniforms.sideColor, mesh.color);
       gl.bindBuffer(gl.ARRAY_BUFFER, mesh.buffer);
       let offset = 0;
       [3, 3, 2, 1].forEach((count, i) => {
@@ -129,22 +132,26 @@ function start() {
   updateMotion();
 }
 
-function createGlyph(character) {
+function createGlyph(design) {
   const resolution = 384;
   const image = document.createElement('canvas');
   image.width = image.height = resolution;
   const ctx = image.getContext('2d', { willReadFrequently: true });
-  ctx.font = `900 ${resolution}px "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans CJK JP", sans-serif`;
-  ctx.fillStyle = '#fff';
-  ctx.textAlign = 'center';
-  const metrics = ctx.measureText(character);
-  ctx.fillText(character, resolution / 2, (resolution + metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent) / 2);
+  // Use the supplied logo paths and colors exactly, with a common scale.
+  const scale = resolution / 64;
+  ctx.translate(resolution / 2 - Number(design.dataset.center) * scale, resolution / 2 - 28.5 * scale);
+  ctx.scale(scale, scale);
+  for (const path of design.querySelectorAll('path')) {
+    ctx.fillStyle = path.getAttribute('fill');
+    ctx.fill(new Path2D(path.getAttribute('d')));
+  }
+  const color = design.dataset.color.slice(1).match(/../g).map(channel => parseInt(channel, 16) / 255);
   const pixels = ctx.getImageData(0, 0, resolution, resolution).data;
   const alpha = (x, y) => pixels[(y * resolution + x) * 4 + 3] / 255;
   const vertices = [];
   const vertex = (x, y, z, nx, ny, nz, u, v, face) => vertices.push(x, y, z, nx, ny, nz, u, v, face);
 
-  // Matching light front and back caps, cut to the glyph silhouette.
+  // Matching front and back caps, cut to the supplied logo silhouette.
   for (const z of [-9, 9]) {
     for (const [u, v] of [[0, 0], [1, 0], [1, 1], [0, 0], [1, 1], [0, 1]]) {
       vertex(u - .5, v - .5, z, 0, 0, Math.sign(z), u, v, 1);
@@ -191,5 +198,5 @@ function createGlyph(character) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  return { buffer, texture, count: vertices.length / 9 };
+  return { buffer, texture, color, count: vertices.length / 9 };
 }
