@@ -88,7 +88,7 @@ function start() {
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.uniform2f(uniforms.viewport, width, height);
-    gl.uniform1f(uniforms.size, Math.max(86, Math.min(window.innerWidth * .13, 168)));
+    gl.uniform1f(uniforms.size, Math.max(150, Math.min(window.innerWidth * .23, 300)));
     const tilt = -12 * Math.PI / 180;
     meshes.forEach((mesh, index) => {
       const angle = elapsed / 9000 + index * Math.PI * 2 / 3;
