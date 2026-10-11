@@ -2,7 +2,7 @@
 
 A minimal HTML, CSS, and JavaScript page. Three extruded Japanese characters spin around an elliptical orbit. No dependencies, installation, or external assets.
 
-Open `index.html` directly, or preview with `python3 -m http.server 8000` and visit http://localhost:8000. The pause button controls motion; the page respects reduced-motion preferences.
+Open `index.html` directly, or preview with `python3 -m http.server 8000` and visit http://localhost:8000. The page respects reduced-motion preferences.
 
 ## Build
 

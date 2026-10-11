@@ -7,10 +7,5 @@ main { flex: 1; display: flex; flex-direction: column; justify-content: center; 
 .center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 16px; font-size: 11px; letter-spacing: 5px; }
 .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
 .character { position: absolute; left: 50%; top: 50%; width: 1em; height: 1em; font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans CJK JP", sans-serif; font-weight: 900; font-size: clamp(86px, 13vw, 168px); line-height: 1; transform-style: preserve-3d; will-change: transform; user-select: none; }
-.layer { position: absolute; inset: 0; display: grid; place-items: center; color: #962518; backface-visibility: visible; transform: translateZ(var(--depth)); }
-.layer.front { color: var(--red); text-shadow: 0 1px 0 #ff8a62; }
-footer { height: 84px; display: flex; justify-content: center; align-items: center; }
-button { appearance: none; width: 40px; height: 40px; border: 1px solid #24241f40; border-radius: 50%; background: transparent; color: var(--ink); cursor: pointer; display: grid; place-items: center; }
-button:hover { background: #24241f08; border-color: var(--ink); }
-button:focus-visible, a:focus-visible { outline: 2px solid var(--red); outline-offset: 5px; }
-.button-icon { font-size: 12px; letter-spacing: 0; width: 10px; }
+.layer { position: absolute; inset: 0; display: grid; place-items: center; color: #a93222; -webkit-text-stroke: .4px currentColor; backface-visibility: visible; transform: translateZ(var(--depth)); }
+.layer.front, .layer.back { color: #ff795c; -webkit-text-stroke: 0; }

@@ -1,17 +1,18 @@
 const scene = document.querySelector('.scene');
 const characters = [...document.querySelectorAll('.character')];
-const button = document.querySelector('#motion');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 let paused = reducedMotion.matches;
 let elapsed = 0;
 let previousTime = null;
 let frame = null;
 
-// Closely spaced text planes give each glyph a real CSS 3D extrusion.
+// Subpixel spacing and overlapping edges keep the extrusion solid as it turns.
+// Matching caps at either end give the front and reverse the same light face.
 characters.forEach(character => {
-  for (let depth = -18; depth <= 0; depth++) {
+  for (let step = 0; step <= 72; step++) {
+    const depth = -18 + step / 4;
     const layer = document.createElement('span');
-    layer.className = depth === 0 ? 'layer front' : 'layer';
+    layer.className = step === 0 ? 'layer back' : step === 72 ? 'layer front' : 'layer';
     layer.textContent = character.dataset.character;
     layer.style.setProperty('--depth', `${depth}px`);
     character.append(layer);
@@ -30,7 +31,7 @@ function render() {
     const tiltedY = x * Math.sin(tilt) + y * Math.cos(tilt);
     const z = Math.sin(angle) * 120;
     const spin = elapsed / 85 + index * 30 - 20;
-    character.style.transform = `translate(-50%, -50%) translate3d(${tiltedX}px, ${tiltedY}px, ${z}px) rotateY(${spin}deg) rotateZ(-8deg)`;
+    character.style.transform = `translate(-50%, -50%) translate3d(${tiltedX}px, ${tiltedY}px, ${z}px) rotateX(10deg) rotateY(${spin}deg) rotateZ(-8deg)`;
     character.style.zIndex = String(Math.round(z + 150));
   });
 }
@@ -45,13 +46,9 @@ function tick(time) {
 function updateMotion() {
   cancelAnimationFrame(frame);
   previousTime = null;
-  button.setAttribute('aria-pressed', String(paused));
-  button.setAttribute('aria-label', paused ? 'Resume motion' : 'Pause motion');
-  button.querySelector('.button-icon').textContent = paused ? '▶' : 'Ⅱ';
   if (!paused && !document.hidden) frame = requestAnimationFrame(tick);
 }
 
-button.addEventListener('click', () => { paused = !paused; updateMotion(); });
 reducedMotion.addEventListener('change', event => { paused = event.matches; updateMotion(); });
 document.addEventListener('visibilitychange', updateMotion);
 window.addEventListener('resize', render);
