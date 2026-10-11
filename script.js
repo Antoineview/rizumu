@@ -46,7 +46,7 @@ function updateMotion() {
   cancelAnimationFrame(frame);
   previousTime = null;
   button.setAttribute('aria-pressed', String(paused));
-  button.querySelector('.button-label').textContent = paused ? 'RESUME MOTION' : 'PAUSE MOTION';
+  button.setAttribute('aria-label', paused ? 'Resume motion' : 'Pause motion');
   button.querySelector('.button-icon').textContent = paused ? '▶' : 'Ⅱ';
   if (!paused && !document.hidden) frame = requestAnimationFrame(tick);
 }
